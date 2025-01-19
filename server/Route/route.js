@@ -68,7 +68,7 @@ router.post("/getUserOrders", orderController.getUserOrders);
 
 router.delete("/delete-mess", messController.deleteMenu);
 
-router.post("/checkout", subscriptionController.initiateSubscription);
-router.post("/success", subscriptionController.addSubscription);
+// router.post("/checkout", subscriptionController.initiateSubscription);
+// router.post("/success", subscriptionController.addSubscription);
 
 module.exports = router;
