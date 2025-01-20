@@ -74,6 +74,10 @@ export const getMessDetails = async (messId) => {
 export const getAllMesses = async () => {
   return await commonAPI("GET", `${server_url}/get-all-mess`, "", "");
 };
+// GEt USERS DETAILS
+export const getAllUsers = async () => {
+  return await commonAPI("GET", `${server_url}/get-all-user`, "", "");
+};
 // ==========================
 // GEt ALL FOODS
 export const getAllFoods = async () => {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AddToCart } from "../services/all_api";
 import { toast, ToastContainer } from "react-toastify";
+import { server_url } from "../services/server_url";
 
 function FoodCard({ food }) {
  
@@ -29,6 +30,7 @@ function FoodCard({ food }) {
       >
         <img
           src={food.foodImage}
+          // src={`${server_url}/uploads/${food.foodImage}`}
           alt=""
           className="hover:scale-105 transition"
         />

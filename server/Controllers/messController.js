@@ -87,6 +87,7 @@ exports.getMessDetails = async (req, res) => {
     const result = await messes.findOne({ _id: messId });
     if (result) {
       res.status(200).json(result);
+      
     } else {
       res.status(406).json("Menu Is Not Found!!!");
     }

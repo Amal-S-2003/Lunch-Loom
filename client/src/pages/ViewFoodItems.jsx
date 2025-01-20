@@ -67,12 +67,25 @@ function ViewFoodItems() {
     handleClose();
   };
   useEffect(() => {
-    if (foodData.foodImage) {
+    if (
+      foodData.foodImage.type == "image/png" ||
+      foodData.foodImage.type == "image/jpg" ||
+      foodData.foodImage.type == "image/jpeg"
+    ) {
+      // setPreview(URL.createObjectURL(registerData.profilePicture));
       const objectUrl = URL.createObjectURL(foodData.foodImage);
       setPreview(objectUrl);
 
       return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      toast.warn("please upload only following formats  (png/jpg/jpeg)");
     }
+    // if (foodData.foodImage) {
+      // const objectUrl = URL.createObjectURL(foodData.foodImage);
+      // setPreview(objectUrl);
+
+      // return () => URL.revokeObjectURL(objectUrl);
+    // }
   }, [foodData.foodImage]);
   return (
     <>

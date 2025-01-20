@@ -11,7 +11,7 @@ const LoginPage = () => {
   });
   const navigate = useNavigate();
   const { userId, setUserId } = useContext(UserContext);
-  const { loggedUserData, setLoggedUserData } = useContext(UserContext);
+  const { loggedUserData, setLoggedUserData ,userLogged,setUserLogged} = useContext(UserContext);
   const handleLogin = async (e) => {
     e.preventDefault();
     const { phone, password } = loginData;
@@ -29,6 +29,7 @@ const LoginPage = () => {
             phone: "",
             password: "",
           });
+          setUserLogged(true)
         } else {
           toast.warn(result.response.data);
         }

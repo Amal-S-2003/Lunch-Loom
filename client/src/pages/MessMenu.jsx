@@ -13,9 +13,9 @@ function MessMenu() {
 
     // =======================
     const [location, setLocation] = useState(''); // State to hold the location input
-    
+    const [query,setQuery]=useState("")
     const [messes, setMesses] = useState([]);
-    const [filteredMesses, setFilteredMesses] = useState(messes); // State for filtered messes
+    // const [filteredMesses, setFilteredMesses] = useState(messes); // State for filtered messes
     const fetchAllMess = async () => {
       const result = await getAllMesses();
       console.log(result.data);
@@ -25,19 +25,25 @@ function MessMenu() {
   
   
     // Handle location input change
-    const handleLocationChange = (e) => {
-      const searchLocation = e.target.value.toLowerCase();
-      setLocation(searchLocation);
-  
-      // Filter the messes based on location input
-      const filtered = messes.filter((mess) => 
-        mess.location.toLowerCase().includes(searchLocation)
+    // const handleLocationChange = (value) => {
+
+      const filteredMesses = messes.filter((mess) =>
+        Object.values(mess).some((value) =>
+          value.toString().toLowerCase().includes(query.toLowerCase())
+        )
       );
+      // const searchLocation = e.target.value.toLowerCase();
+      // setLocation(searchLocation);
   
-      setFilteredMesses(filtered);
+      // // Filter the messes based on location input
+      // const filtered = messes.filter((mess) => 
+      //   mess.location.toLowerCase().includes(searchLocation)
+      // );
+  
+      // setFilteredMesses(filteredMess);
       console.log("filteredMesses>>>>>>>>>",filteredMesses);
       
-    };
+    // };
   
     useEffect(() => {
       fetchAllMess();
@@ -110,7 +116,9 @@ function MessMenu() {
               <input
                 className="bg-teal-50 p-2 border-teal-800 rounded w-100 outline-teal-500"
                 type="text"
-                onChange={handleLocationChange}
+                // onChange={(e)=>handleLocationChange(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
+
                 placeholder="Find Your Nearest Messes here..."
               />
               <button className="bg-teal-600 text-white px-3 py-2 mx-auto rounded flex items-center gap-2">

@@ -53,8 +53,12 @@ router.post("/get-user", userController.getUserDeatils);
 // Updatethe menu
 router.put("/update-menu", messController.updateWeeklyMenu);
 
+
 // Fetch All MessData
 router.get("/get-all-mess", messController.getAllMesses);
+
+// Fetch All Users 
+router.get("/get-all-user", userController.getAllUsers);
 
 // Fetch All Foods
 router.get("/get-all-foods", foodController.getAllFoods);

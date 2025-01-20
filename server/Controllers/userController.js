@@ -78,8 +78,19 @@ exports.getUserDeatils = async (req, res) => {
   try {
     const result = await users.find({ _id: userId });
     res.status(200).json(result);
+    
   } catch (error) {
     console.log(error);
     res.status(401).json(error);
   }
 };
+
+exports.getAllUsers=async(req,res)=>{
+  try {
+    const result=await users.find()
+    res.status(200).json(result)
+  } catch (error) {
+    console.log(error);
+    
+  }
+}

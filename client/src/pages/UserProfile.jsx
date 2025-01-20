@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { getUserData, getUserSubscriptions, updateProfile } from "../services/all_api";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  getUserData,
+  getUserSubscriptions,
+  updateProfile,
+} from "../services/all_api";
 import { server_url } from "../services/server_url";
 import { useNavigate } from "react-router-dom";
 // import Button from "react-bootstrap/Button";
@@ -8,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form, Toast, ToastContainer } from "react-bootstrap";
 import { assets } from "../assets/assets";
 import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext";
 
 function UserProfile() {
   const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
@@ -17,6 +22,7 @@ function UserProfile() {
   const [show, setShow] = useState(false);
   const [preview, setPreview] = useState();
   const [userData, setUserData] = useState({});
+  const { userLogged,setUserLogged} = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -25,7 +31,7 @@ function UserProfile() {
       const result = await getUserData({ userId });
       setLoggedUserData(result.data[0]);
       setUserData({
-        userId:userId,
+        userId: userId,
         name: loggedUserData.name,
         email: loggedUserData.email,
         phone: loggedUserData.phone,
@@ -62,8 +68,9 @@ function UserProfile() {
 
   const navigate = useNavigate();
   const logout = () => {
-    navigate("/");
     sessionStorage.clear();
+    navigate("/");
+    setUserLogged(false)
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,32 +82,16 @@ function UserProfile() {
       "Content-Type": "multipart/form-data",
     };
     try {
-    //   if(userData.profilePicture===""){
-    //     console.log("QQQQ");
-        
-    //     const reqBody = new FormData();
-    //     reqBody.append("userId", userId);
-    //     reqBody.append("name", userData.name);
-    //     reqBody.append("email", userData.email);
-    //     reqBody.append("phone",userData.phone);
-    //     reqBody.append("address", userData.address);
-    //     reqBody.append("location", userData.location);
-    //     // reqBody.append("profilePicture", userData.profilePicture);
-    //     const result = await updateProfile(reqBody);
-    //   }else{
-    //     console.log("PPP");
-
-        const reqBody = new FormData();
-        reqBody.append("userId", userId);
-        reqBody.append("name", userData.name);
-        reqBody.append("email", userData.email);
-        reqBody.append("phone",userData.phone);
-        reqBody.append("address", userData.address);
-        reqBody.append("location", userData.location);
-        reqBody.append("profilePicture", userData.profilePicture);
-        const result = await updateProfile(userData, reqHeader);
-toast.success(result.data)
-      // }
+      const reqBody = new FormData();
+      reqBody.append("userId", userId);
+      reqBody.append("name", userData.name);
+      reqBody.append("email", userData.email);
+      reqBody.append("phone", userData.phone);
+      reqBody.append("address", userData.address);
+      reqBody.append("location", userData.location);
+      reqBody.append("profilePicture", userData.profilePicture);
+      const result = await updateProfile(userData, reqHeader);
+      toast.success(result.data);
     } catch (err) {
       console.log(err);
     }
@@ -361,7 +352,7 @@ toast.success(result.data)
           </Button>
         </Modal.Footer>
       </Modal>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }

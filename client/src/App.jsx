@@ -28,9 +28,11 @@ import OrderList from "./pages/OrderList";
 import { useContext } from "react";
 import { TokenAuthContext } from "./context/TokenAuth";
 import CancelPage from "./pages/CancelPage";
+import { UserContext } from "./context/UserContext";
 
 function App() {
   const { isAuthorized, setIsAuthorized } = useContext(TokenAuthContext);
+  const { userLogged,setUserLogged} = useContext(UserContext);
 
   return (
     <div>
@@ -40,7 +42,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="order" element={<OrderPage />} />
           <Route path="foods" element={<Foods />} />
-          <Route path="profile" element={<UserProfile />} />
+          <Route path="profile" element={userLogged?<UserProfile />:<UserHome/>} />
           <Route path="mess-details/:id" element={<MessDetails />} />
           <Route path="myOrders" element={<ViewOrders />} />
 

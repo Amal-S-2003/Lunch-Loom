@@ -1,10 +1,27 @@
 import React, { useContext, useState } from "react";
 import { MessContext } from "../context/MessContext";
 import { useNavigate } from "react-router-dom";
-
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { getMessData } from "../services/all_api";
+import { server_url } from "../services/server_url";
 function ViewMessOwners() {
   const [query, setQuery] = useState("");
   const { allMesses, setAllMesses } = useContext(MessContext);
+  const [show, setShow] = useState(false);
+  const [messData, setMessData] = useState({});
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const showProfile = async (messId) => {
+    handleShow();
+    console.log(messId);
+    
+    const result = await getMessData({ messId });
+    console.log("resultresult", result.data);
+
+    setMessData(result.data);
+  };
   const filteredMesses = allMesses.filter((mess) =>
     Object.values(mess).some((value) =>
       value.toString().toLowerCase().includes(query.toLowerCase())
@@ -56,12 +73,11 @@ function ViewMessOwners() {
                   <td>{mess.address}</td>
                   <td>{mess.location}</td>
                   <td>
-                    <a href={`mess-details/${mess._id}`}>
-                    <i
-                    // onClick={() => navigate()}
-                    class="fa-solid fa-eye text-slate-800 cursor-pointer"
-                    ></i>
-                    </a>
+                      <i
+                        // onClick={() => navigate()}
+                        onClick={()=>showProfile(mess._id)}
+                        class="fa-solid fa-eye text-slate-800 cursor-pointer"
+                      ></i>
                   </td>
                   {/* <td>
                     <i class="fa-solid fa-trash text-danger"></i>
@@ -78,6 +94,48 @@ function ViewMessOwners() {
           </tbody>
         </table>
       </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title ><p className="font-bold text-gray-800">{messData.messName}</p></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="flex gap-3 p-3 flex-col ">
+
+            <div
+              className="w-40 h-40 rounded-lg border-3"
+              style={{
+                backgroundImage: `url(${server_url}/uploads/${messData.messImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            ></div>
+
+            <div className="w-full">
+              <p>
+                <strong>Email:</strong> {messData.emailAddress}
+              </p>
+              <p>
+                <strong>Phone:</strong> {messData.phoneNumber}
+              </p>
+              <p>
+                <strong>Address:</strong> {messData.address}
+              </p>
+              <p>
+                <strong>Location:</strong> {messData.location}
+              </p>
+              {/* <p>
+                <strong>Google Map Link:</strong> {messData.googleMapLink}
+              </p> */}
+              <p>
+                <strong>Details:</strong> {messData.messDescription}
+              </p>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleClose}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
