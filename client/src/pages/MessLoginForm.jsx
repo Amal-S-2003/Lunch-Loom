@@ -87,6 +87,7 @@ const MessLoginForm = () => {
           </button>
         </div>
       </form>
+      <p className="text-gray-500 text-center m-3">Are you new in here? <span className="text-red-500 fw-bold" onClick={()=>navigate('/mess-registration')}>Register</span></p>
       <ToastContainer />.
     </div>
   );

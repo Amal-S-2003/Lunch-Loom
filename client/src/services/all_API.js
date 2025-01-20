@@ -93,6 +93,15 @@ export const updateCart = async (reqBody) => {
 export const placeOrder = async (reqBody) => {
   return await commonAPI("POST", `${server_url}/place-order`, reqBody, "");
 };
+
+// addComment
+export const addComment = async (reqBody) => {
+  return await commonAPI("POST", `${server_url}/add-comment`, reqBody, "");
+};
+// getAllComment
+export const getAllComment = async (messId) => {
+  return await commonAPI("POST", `${server_url}/get-comments`, messId, "");
+};
 // getUserOrders
 export const getUserOrders = async (userId) => {
   return await commonAPI("POST", `${server_url}/getUserOrders`, userId, "");

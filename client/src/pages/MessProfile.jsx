@@ -44,7 +44,7 @@ const MessProfile = () => {
           {/* Home Delivery Badge */}
           {messData.homeDelivery && (
             <div className="mt-4 inline-flex items-center bg-green-100 text-green-600 text-sm font-medium py-1 px-3 rounded-full">
-              <span className="text-lg">\u2714</span>
+              <span className="text-lg">✔ </span>
               <span className="ml-2">Home Delivery Available</span>
             </div>
           )}

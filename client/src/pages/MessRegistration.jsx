@@ -287,7 +287,7 @@ const MessRegistrationForm = () => {
             </>
           )}
         </form>
-        <p className="text-gray-500 text-center m-3">Already have an account?<span className="text-red-500 fw-bold cursor-pointer" onClick={navigate('/mess-login')}>Login</span></p>
+        <p className="text-gray-500 text-center m-3">Already have an account?<span className="text-red-500 fw-bold cursor-pointer" onClick={()=>navigate('/mess-login')}>Login</span></p>
         <ToastContainer />
       </div>
     </div>

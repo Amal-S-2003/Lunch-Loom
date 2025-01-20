@@ -5,6 +5,7 @@ const messController = require("../Controllers/messController");
 const subscriptionController = require("../Controllers/subscriptionController");
 const foodController = require("../Controllers/foodController");
 const orderController = require("../Controllers/orderController");
+const commentController = require("../Controllers/commentController");
 const multerConfig = require("../middleware/multerMiddleWare");
 const jwtMiddleWare = require("../middleware/jwtMiddleware");
 
@@ -64,11 +65,14 @@ router.put("/update-delivery-status", orderController.updateOrderStatus);
 
 router.put("/add-to-cart", foodController.addToCart);
 
-router.put("/update-cart", foodController.updateCart);
+router.put("/update-cart", foodController.updateCart); 
 
 router.post("/get-cart", foodController.getCartDetails);
 
-router.post("/place-order", orderController.placeOrder);
+router.post("/place-order", orderController.placeOrder); 
+ 
+router.post("/add-comment", commentController.addComment);
+router.post("/get-comments", commentController.getAllComments);
 
 router.post("/getUserOrders", orderController.getUserOrders);
 
