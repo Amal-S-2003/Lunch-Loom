@@ -27,6 +27,7 @@ import ViewOrders from "./pages/ViewOrders";
 import OrderList from "./pages/OrderList";
 import { useContext } from "react";
 import { TokenAuthContext } from "./context/TokenAuth";
+import CancelPage from "./pages/CancelPage";
 
 function App() {
   const { isAuthorized, setIsAuthorized } = useContext(TokenAuthContext);
@@ -65,6 +66,7 @@ function App() {
         <Route path="/mess-registration" element={<MessRegistration />} />
         <Route path="/mess-login" element={<MessLoginForm />} />
         <Route path="/success/:data" element={<PaymentSuccess />} />
+        <Route path="/cancel" element={<CancelPage />} />
         {/* <Route path="/myOrders" element={<ViewOrders />} /> */}
 
 

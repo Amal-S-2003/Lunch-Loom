@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, redirect, useNavigate, useParams } from "react-router-dom";
-import { getMessData, subcriptionFunction } from "../services/all_api";
 import { server_url } from "../services/server_url";
-
+import { getMessData, subcriptionFunction } from "../services/all_API";
+subcriptionFunction
 const MessDetails = () => {
   const [messData, setMessData] = useState(null);
   const navigate=useNavigate()
@@ -33,7 +33,6 @@ const MessDetails = () => {
     }
     const result=await subcriptionFunction(reqBody)
     if (result.status==200) {
-      console.log(result.data);
       window.location.href = result.data;
     } else {
       console.log(result.response.data);

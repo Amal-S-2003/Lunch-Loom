@@ -8,7 +8,7 @@ const subscriptionSchema = new mongoose.Schema({
   messName: {
     type: String,
     required: true,
-  },
+  }, 
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

@@ -7,7 +7,9 @@ function Navbar() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [loggedUserData, setLoggedUserData] = useState({cart:0});
-  
+  const [showOptions, setShowOptions] = useState(false);
+  // const navigate = useNavigate();
+
 
     const fetchLoggedUserData = async () => {
       try {
@@ -100,12 +102,44 @@ function Navbar() {
                   Profile
                 </NavLink>
               ) : (
-                <a
-                  className="border-2 px-6 py-1.5 rounded-lg border-gray-600 font-medium text-gray-600 hover:bg-gray-600 hover:text-white btn"
-                  onClick={() => navigate("/login")}
+                // <button
+                //   className="border-2 px-6 py-1.5 rounded-lg border-gray-600 font-medium text-gray-600 hover:bg-gray-600 hover:text-white btn"
+                //   onClick={() => navigate("/login")}
+                // >
+                //   Login
+                // </button>
+                <div className="relative">
+                <button
+                  className="border-2 px-6 py-1.5 rounded-lg border-gray-600 font-medium text-gray-600 hover:bg-gray-600 hover:text-white"
+                  onClick={() => setShowOptions(!showOptions)}
+
                 >
                   Login
-                </a>
+                </button>
+                {showOptions && (
+                  <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-lg shadow-lg w-40">
+                    <ul className="text-gray-700">
+                      <li>
+                        <button
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={()=>navigate('/login')}
+
+                        >
+                          User Login
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={()=>navigate('/mess-login')}
+                        >
+                          Mess Login
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
               )}
             </li>
           </ul>

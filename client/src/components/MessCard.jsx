@@ -14,7 +14,7 @@ const lowestPlan = mess.subscriptionPlans.reduce((prev, curr) =>
       <img
           src={`${server_url}/uploads/${mess.messImage}`}
         alt={mess.messName}
-        className="w-full h-48 object-cover"
+        className="w-full h-48 object-cover "
       />
 
       {/* Card Content */}
@@ -23,14 +23,14 @@ const lowestPlan = mess.subscriptionPlans.reduce((prev, curr) =>
         <h2 className="text-xl font-bold text-gray-800">{mess.messName}</h2>
 
         {/* Location */}
-        <p className="text-gray-600 text-sm">📍 {mess.location}</p>
+        <p className="text-gray-600 text-sm"> {mess.location}</p>
 
         {/* Lowest Subscription Plan */}
         <p className="text-gray-800 mt-2">
-          💰 <span className="font-semibold">₹{lowestPlan.price}</span> -{" "}
+          <span className="font-semibold">₹{lowestPlan.price}</span> -{" "}
           {lowestPlan.name} Plan
         </p>
-        <button className="bg-gray-800 text-white p-2 rounded w-32 items-start" onClick={()=>navigate(`mess-details/${mess._id}`)}>Enguire Now</button>
+        <button className="bg-gray-800 mt-3 text-white p-2 rounded w-32 items-start" onClick={()=>navigate(`mess-details/${mess._id}`)}>Enguire Now</button>
 
       </div>
     </div>

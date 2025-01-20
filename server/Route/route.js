@@ -17,6 +17,12 @@ router.post(
   multerConfig.single("profilePicture"),
   userController.register
 );
+// User Register
+router.post(
+  "/updateProfile",
+  multerConfig.single("profilePicture"),
+  userController.updateProfile
+);
 // addNewFood
 router.post(
   "/add-food",
@@ -66,9 +72,16 @@ router.post("/place-order", orderController.placeOrder);
 
 router.post("/getUserOrders", orderController.getUserOrders);
 
+router.post("/getUserSubscriptions", subscriptionController.subscriptionController);
+
+router.post("/getMessCustomers", subscriptionController.getMessCustomers);
+
 router.delete("/delete-mess", messController.deleteMenu);
 
-// router.post("/checkout", subscriptionController.initiateSubscription);
+router.post("/checkout", subscriptionController.initiateSubscription);
+
+router.get("/cancelSub",subscriptionController.deleteLast)
 // router.post("/success", subscriptionController.addSubscription);
 
 module.exports = router;
+ 

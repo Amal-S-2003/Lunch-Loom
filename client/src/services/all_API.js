@@ -5,6 +5,15 @@ import { server_url } from "./server_url";
 export const registerAPI = async (reqBody, reqHeader) => {
   return await commonAPI("POST", `${server_url}/register`, reqBody, reqHeader);
 }; 
+
+// updateProfile
+export const updateProfile = async (reqBody, reqHeader) => {
+  console.log("updateProfile reqBody",reqBody);
+  
+  return await commonAPI("POST", `${server_url}/updateProfile`, reqBody, reqHeader?reqHeader:"");
+}; 
+
+
 // User addNewFood
 export const addNewFood = async (reqBody, reqHeader) => {
   return await commonAPI("POST", `${server_url}/add-food`, reqBody, reqHeader);
@@ -87,6 +96,20 @@ export const placeOrder = async (reqBody) => {
 // getUserOrders
 export const getUserOrders = async (userId) => {
   return await commonAPI("POST", `${server_url}/getUserOrders`, userId, "");
+};
+
+// getUserSubscriptions
+export const getUserSubscriptions = async (userId) => {
+  return await commonAPI("POST", `${server_url}/getUserSubscriptions`, userId, "");
+}; 
+// getMessCustomers
+export const getMessCustomers = async (messId) => {
+  return await commonAPI("POST", `${server_url}/getMessCustomers`, messId, "");
+}; 
+
+// getUserSubscriptions
+export const deleteLastSub = async () => {
+  return await commonAPI("GET", `${server_url}/cancelSub`, "", "");
 };
 
 //Delete Menu  by MEss Owner

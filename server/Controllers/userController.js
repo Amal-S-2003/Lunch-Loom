@@ -44,6 +44,35 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.updateProfile = async (req, res) => {
+  const { userId, name, email, phone, address, location } = req.body;
+  const profilePicture = req?.file?.filename;
+
+  try {
+    if (profilePicture == undefined) {
+      await users.findByIdAndUpdate(userId, {
+        name,
+        email,
+        phone,
+        address,
+        location,
+      });
+    } else {
+      await users.findByIdAndUpdate(userId, {
+        name,
+        email,
+        phone,
+        address,
+        location,
+        profilePicture,
+      });
+    }
+    res.status(200).json("Profile Updated SuccessFully");
+  } catch (err) {
+    res.status(401).json(err);
+  }
+};
+
 exports.getUserDeatils = async (req, res) => {
   const { userId } = req.body;
   try {
