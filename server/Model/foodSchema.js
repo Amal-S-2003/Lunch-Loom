@@ -19,7 +19,7 @@ const foodSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  ratings: {
+  ratings: { 
     type: Number,
     min: 0,
     max: 5,

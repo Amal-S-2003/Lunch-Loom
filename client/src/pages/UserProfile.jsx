@@ -15,20 +15,22 @@ import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
 
 function UserProfile() {
-  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
+  // const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [loggedUserData, setLoggedUserData] = useState({});
   const [subscription, setsubScription] = useState(null);
   const [duration, setDuration] = useState(null);
   const [show, setShow] = useState(false);
   const [preview, setPreview] = useState();
   const [userData, setUserData] = useState({});
-  const { userLogged,setUserLogged} = useContext(UserContext);
+  const { userId,setUserId,userLogged,setUserLogged} = useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const fetchLoggedUserData = async () => {
     try {
       const result = await getUserData({ userId });
+      console.log(result);
+      
       setLoggedUserData(result.data[0]);
       setUserData({
         userId: userId,
@@ -48,8 +50,8 @@ function UserProfile() {
       const result = await getUserSubscriptions({ userId });
 
       setsubScription(result.data[0]);
-      const calculateDuration = (start, end) => {
-        const startDate = new Date(start);
+      const calculateDuration = (end) => {
+        const startDate = new Date();
         const endDate = new Date(end);
         const timeDifference = endDate - startDate; // Difference in milliseconds
         const daysDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert to days
@@ -57,7 +59,7 @@ function UserProfile() {
       };
       // const { startingDate, endingDate } = subscription;
       const abc = calculateDuration(
-        result.data[0].startingDate,
+        // result.data[0].startingDate,
         result.data[0].endingDate
       );
       setDuration(abc);
@@ -67,10 +69,11 @@ function UserProfile() {
   };
 
   const navigate = useNavigate();
-  const logout = () => {
+  const logout = async() => {
     sessionStorage.clear();
-    navigate("/");
+    setUserId(null)
     setUserLogged(false)
+    await navigate("/");
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -97,9 +100,11 @@ function UserProfile() {
     }
     console.log("Updated User Data:", userData);
     handleClose();
+    fetchLoggedUserData();
+
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     if (userData.profilePicture) {
       const objectUrl = URL.createObjectURL(userData.profilePicture);
       setPreview(objectUrl);
@@ -233,8 +238,8 @@ function UserProfile() {
                 <p className="text-slate-800 text-xl font-bold ">
                   Currently have no subscriptions!!!
                 </p>
-                <button className="bg bg-gray-700 text-white px-3 py-2 rounded-lg">
-                  Renew Now
+                <button onClick={()=>navigate('/')} className="bg bg-gray-700 text-white px-3 py-2 rounded-lg">
+                  Find Mess Now
                 </button>
               </div>
             )}
@@ -358,3 +363,4 @@ function UserProfile() {
 }
 
 export default UserProfile;
+ 

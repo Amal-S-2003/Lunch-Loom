@@ -139,3 +139,48 @@ exports.getAllMesses=async(req,res)=>{
     
   }
 }
+
+
+exports.updateMess = async (req, res) => {
+  const { messId,
+    messName,
+    phoneNumber,
+    emailAddress,
+    address,
+    location,
+    messDescription,
+    googleMapLink,
+    homeDelivery,
+     } = req.body;
+  const messImage = req?.file?.filename;
+
+  try {
+    if (messImage == undefined) {
+      await messes.findByIdAndUpdate(messId, {
+        messName,
+        phoneNumber,
+        emailAddress,
+        address,
+        location,
+        messDescription,
+        googleMapLink,
+        homeDelivery,
+      });
+    } else {
+      await messes.findByIdAndUpdate(messId, {
+        messName,
+        phoneNumber,
+        emailAddress,
+        address,
+        location,
+        messDescription,
+        googleMapLink,
+        homeDelivery,
+        messImage,
+      });
+    }
+    res.status(200).json("Profile Updated SuccessFully");
+  } catch (err) {
+    res.status(401).json(err);
+  }
+};

@@ -29,6 +29,7 @@ import { useContext } from "react";
 import { TokenAuthContext } from "./context/TokenAuth";
 import CancelPage from "./pages/CancelPage";
 import { UserContext } from "./context/UserContext";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   const { isAuthorized, setIsAuthorized } = useContext(TokenAuthContext);
@@ -42,7 +43,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="order" element={<OrderPage />} />
           <Route path="foods" element={<Foods />} />
-          <Route path="profile" element={userLogged?<UserProfile />:<UserHome/>} />
+          <Route path="profile" element={<UserProfile />} />
           <Route path="mess-details/:id" element={<MessDetails />} />
           <Route path="myOrders" element={<ViewOrders />} />
 
@@ -55,7 +56,7 @@ function App() {
           <Route path="customers" element={<CustomerListing />} />
           <Route path="mess-profile" element={<MessProfile />} />
         </Route>
-        <Route path="/admin" element={<AdminHome />}>
+        <Route path="/admin-home" element={<AdminHome />}>
           <Route path="" element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<ViewUsers />} />
@@ -69,6 +70,7 @@ function App() {
         <Route path="/mess-login" element={<MessLoginForm />} />
         <Route path="/success/:data" element={<PaymentSuccess />} />
         <Route path="/cancel" element={<CancelPage />} />
+        <Route path="/admin" element={<AdminLogin />} />
         {/* <Route path="/myOrders" element={<ViewOrders />} /> */}
 
 

@@ -20,7 +20,7 @@ function MessMenu() {
       const result = await getAllMesses();
       console.log(result.data);
       setMesses(result.data);
-      setFilteredMesses(result.data)
+      // setFilteredMesses(result.data)
     };
   
   

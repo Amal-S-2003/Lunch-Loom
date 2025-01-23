@@ -5,7 +5,12 @@ const subscriptions = require("../Model/subscriptionSchema");
 const stripe = require("stripe")(process.env.stripe_secret_key);
 
 exports.initiateSubscription = async (req, res) => {
-  const { name, details, price, duration, messName, messId, userId } = req.body;
+  const { name, details, price, duration, messName, messId, userId ,username,
+    email,
+    phone} = req.body;
+console.log("initiateSubscription",name, details, price, duration, messName, messId, userId ,username,
+  email,
+  phone);
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -16,7 +21,7 @@ exports.initiateSubscription = async (req, res) => {
             name: messName,
             description: `Details: ${details} \n Duration: ${duration} `,
           },
-
+ 
           unit_amount: price * 100,
         },
         quantity: 1,
@@ -25,7 +30,7 @@ exports.initiateSubscription = async (req, res) => {
     mode: "payment",
     success_url: `http://localhost:5173/success`,
     cancel_url: "http://localhost:5173/cancel",
-  });
+  }); 
   const startingDate = new Date();
   const endingDate = new Date();
 
@@ -42,6 +47,9 @@ exports.initiateSubscription = async (req, res) => {
     userId,
     startingDate,
     endingDate,
+    username,
+    email,
+    phone
   });
   await newSubscription.save();
   res.status(200).json(session.url);

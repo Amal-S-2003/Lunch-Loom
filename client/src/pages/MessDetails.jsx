@@ -74,22 +74,28 @@ const MessDetails = () => {
     // setMessId(id);
     fetchLoggedUserData();
     fetchMessData();
-  }, []);
+    fetchAllComments()
+  }, [messData]);
 
   const handleSubscribe = async (plan) => {
     const { name, details, price, duration } = plan;
     const messId = id;
     const messName = messData.messName;
     const userId = sessionStorage.getItem("userId");
+    let username=loggedUserData.name
+    let   email=loggedUserData.email
+    let   phone=loggedUserData.phone
     const reqBody = {
       name,
       details,
-      price,
+      price, 
       duration,
       messName,
       messId,
       userId,
+      username,email,phone
     };
+    console.log(reqBody)
     const result = await subcriptionFunction(reqBody);
     if (result.status == 200) {
       window.location.href = result.data;

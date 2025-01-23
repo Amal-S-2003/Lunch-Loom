@@ -1,16 +1,16 @@
 import React from "react";
 
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 function MessOwnerHome() {
-  
+  const navigate=useNavigate()
   return (
     <>
       <div className="max-h-screen overflow-x-hidden  overflow-y-auto">
         <div className="border-b-2 py-4 ">
           <div className="px-5 flex justify-between items-center">
-            <NavLink to="/admin" className="text-3xl flex items-center font-black">
+            <NavLink to="/admin-home" className="text-3xl flex items-center font-black">
               <span>
                 <img className="w-14 h-14" src={assets.logo} alt="" />
               </span>
@@ -22,7 +22,7 @@ function MessOwnerHome() {
           
                 <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
                   <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
-                    <li className="py-1 px-2 cursor-pointer pr-10">Logout</li>
+                    <li className="py-1 px-2 cursor-pointer pr-10" onClick={()=>navigate('/')}>Logout</li>
                   </ul>
                 </div>
               </div>
@@ -39,7 +39,7 @@ function MessOwnerHome() {
                     isActive && "bg-blue-100 border-r-4 border-blue-500"
                   }`
                 }
-                to={"/admin/dashboard"}
+                to={"/admin-home/dashboard"}
               >
                 <p >Dashboard</p>
               </NavLink>
@@ -49,7 +49,7 @@ function MessOwnerHome() {
                     isActive && "bg-blue-100 border-r-4 border-blue-500"
                   }`
                 }
-                to={"/admin/users"}
+                to={"/admin-home/users"}
               >
                 <p >View Users</p>
               </NavLink>
@@ -59,7 +59,7 @@ function MessOwnerHome() {
                     isActive && "bg-blue-100 border-r-4 border-blue-500"
                   }`
                 }
-                to={"/admin/mess"}
+                to={"/admin-home/mess"}
               >
                 <p >View Mess</p>
               </NavLink>
@@ -69,7 +69,7 @@ function MessOwnerHome() {
                     isActive && "bg-blue-100 border-r-4 border-blue-500"
                   }`
                 }
-                to={"/admin/fooditems"}
+                to={"/admin-home/fooditems"}
               >
                 <p >fooditems</p>
               </NavLink>
@@ -79,7 +79,7 @@ function MessOwnerHome() {
                     isActive && "bg-blue-100 border-r-4 border-blue-500"
                   }`
                 }
-                to={"/admin/view-all-orders"}
+                to={"/admin-home/view-all-orders"}
               >
                 <p >All Orders</p>
               </NavLink>

@@ -8,9 +8,17 @@ export const registerAPI = async (reqBody, reqHeader) => {
 
 // updateProfile
 export const updateProfile = async (reqBody, reqHeader) => {
-  console.log("updateProfile reqBody",reqBody);
-  
   return await commonAPI("POST", `${server_url}/updateProfile`, reqBody, reqHeader?reqHeader:"");
+}; 
+
+// updateFood
+export const updateFood = async (reqBody, reqHeader) => {
+  return await commonAPI("POST", `${server_url}/updateFood`, reqBody, reqHeader?reqHeader:"");
+}; 
+// updateMess
+export const updateMess = async (reqBody, reqHeader) => {
+  console.log("updateFood reqBody",reqBody);
+  return await commonAPI("POST", `${server_url}/updateMess`, reqBody, reqHeader?reqHeader:"");
 }; 
 
 
@@ -30,6 +38,10 @@ export const getUserData = async (userId) => {
 // getMessData
 export const getMessData = async (messId) => {
   return await commonAPI("POST", `${server_url}/get-mess`, messId, "");
+};
+// getFoodData
+export const getFoodData = async (foodId) => {
+  return await commonAPI("POST", `${server_url}/get-food`, foodId, "");
 };
 
 // getAllOrders
@@ -135,3 +147,4 @@ export const subcriptionFunction=async(reqBody)=>{
   return await commonAPI("POST",  `${server_url}/checkout`,reqBody,"")
 }
 
+ 

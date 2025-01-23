@@ -1,30 +1,33 @@
 import React, { useContext, useEffect, useState } from "react";
 import { assets } from "../assets/assets";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { getUserData } from "../services/all_api";
+import { CartContext } from "../context/CartContext";
 function Navbar() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
-  const [loggedUserData, setLoggedUserData] = useState({cart:0});
+  // const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
+  const { userId, setUserId } = useContext(UserContext);
+  const [loggedUserData, setLoggedUserData] = useState({ cart: 0 });
   const [showOptions, setShowOptions] = useState(false);
   // const navigate = useNavigate();
+  const { navCart, setNavCart } = useContext(CartContext);
 
+  const fetchLoggedUserData = async () => {
+    try {
+      const result = await getUserData({ userId });
+      setLoggedUserData(result.data[0]);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  const location = useLocation(); // Get the current location
 
-    const fetchLoggedUserData = async () => {
-      try {
-        const result = await getUserData({ userId });
-        setLoggedUserData(result.data[0]);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-      
-    };
-  
-    useEffect(() => {
-      fetchLoggedUserData();
-    }, [userId]);
-
+  useEffect(() => {
+    fetchLoggedUserData();
+    console.log("useeffect worked");
+    console.log(navCart);
+  }, [userId, location.pathname, navCart]);
 
   return (
     <header className=" mb-2   fixed-top bg-white">
@@ -83,10 +86,13 @@ function Navbar() {
                 }
               >
                 Cart
-                {
-                  loggedUserData?.cart?.length>0?
-                  <p className="bg-green-500 flex items-center justify-center ms-2 rounded-full w-6 text-white">{loggedUserData.cart.length}</p>:""
-                }
+                {loggedUserData?.cart?.length > 0 ? (
+                  <p className="bg-green-500 flex items-center justify-center ms-2 rounded-full w-6 text-white">
+                    {loggedUserData.cart.length}
+                  </p>
+                ) : (
+                  ""
+                )}
               </NavLink>
             </li>
             <li className=" sm:mt-0">
@@ -109,37 +115,35 @@ function Navbar() {
                 //   Login
                 // </button>
                 <div className="relative">
-                <button
-                  className="border-2 px-6 py-1.5 rounded-lg border-gray-600 font-medium text-gray-600 hover:bg-gray-600 hover:text-white"
-                  onClick={() => setShowOptions(!showOptions)}
-
-                >
-                  Login
-                </button>
-                {showOptions && (
-                  <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-lg shadow-lg w-40">
-                    <ul className="text-gray-700">
-                      <li>
-                        <button
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={()=>navigate('/login')}
-
-                        >
-                          User Login
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={()=>navigate('/mess-login')}
-                        >
-                          Mess Login
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
+                  <button
+                    className="border-2 px-6 py-1.5 rounded-lg border-gray-600 font-medium text-gray-600 hover:bg-gray-600 hover:text-white"
+                    onClick={() => setShowOptions(!showOptions)}
+                  >
+                    Login
+                  </button>
+                  {showOptions && (
+                    <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-lg shadow-lg w-40">
+                      <ul className="text-gray-700">
+                        <li>
+                          <button
+                            className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                            onClick={() => navigate("/login")}
+                          >
+                            User Login
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                            onClick={() => navigate("/mess-login")}
+                          >
+                            Mess Login
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               )}
             </li>
           </ul>

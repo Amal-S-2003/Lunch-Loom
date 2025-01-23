@@ -89,3 +89,35 @@ exports.addFood = async (req, res) => {
 }
 };
  
+
+exports.getFoodDeatils = async (req, res) => {
+  const { foodId } = req.body;
+  try {
+    const result = await foods.find({ _id: foodId });
+    res.status(200).json(result);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(401).json(error);
+  }
+};
+
+exports.updateFood = async (req, res) => {
+  const { foodId,foodName, description, type, price } = req.body;
+  const foodImage = req?.file?.filename;
+  try {
+    if (foodImage == undefined) {
+      await foods.findByIdAndUpdate(foodId, {
+        foodName, description, type, price
+      });
+    } else {
+      await foods.findByIdAndUpdate(foodId, {
+        foodName, description, type, price,
+        foodImage,
+      });
+    }
+    res.status(200).json("Food Updated SuccessFully");
+  } catch (err) {
+    res.status(401).json(err);
+  }
+};

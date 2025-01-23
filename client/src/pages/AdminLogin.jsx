@@ -1,38 +1,25 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../services/all_api";
 import { toast, ToastContainer } from "react-toastify";
-import { UserContext } from "../context/UserContext";
 
-const LoginPage = () => {
+const AdminLogin = () => {
   const [loginData, setLoginData] = useState({
-    phone: "",
+    email: "",
     password: "",
   });
   const navigate = useNavigate();
-  const { userId, setUserId } = useContext(UserContext);
-  const { loggedUserData, setLoggedUserData ,userLogged,setUserLogged} = useContext(UserContext);
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { phone, password } = loginData;
-    if (!phone || !password) {
+    const { email, password } = loginData;
+    if (!email || !password) {
       toast.info("Please Fill Misssing Fields");
     } else {
       try {
-        const result = await loginApi({ phone, password });
-        if (result.status == 200) {
-          sessionStorage.setItem("userId", result.data.existingUser._id);
-          sessionStorage.setItem("token", result.data.token);
-          setUserId(result.data.existingUser._id);
-          setLoginData({
-            phone: "",
-            password: "",
-          });
-          setUserLogged(true)
-         await navigate("/");
-
+        if (email == "admin@gmail.com" && password == "admin") {
+          toast.success("Login Successfull");
+          await navigate("/admin-home");
         } else {
-          toast.warn(result.response.data);
+            toast.warn("email or password is wrong!!")
         }
       } catch (err) {
         console.log(err);
@@ -42,22 +29,22 @@ const LoginPage = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-700">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-700">Admin Login</h2>
         <div className="mt-6">
           <div className="mb-4">
             <label
-              htmlFor="phone"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-600"
             >
-              Phone number
+              email
             </label>
             <input
-              type="text"
-              id="phone"
-              name="phone"
-              placeholder="Enter your phone number"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email "
               onChange={(e) =>
-                setLoginData({ ...loginData, phone: e.target.value })
+                setLoginData({ ...loginData, email: e.target.value })
               }
               className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -99,4 +86,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AdminLogin;

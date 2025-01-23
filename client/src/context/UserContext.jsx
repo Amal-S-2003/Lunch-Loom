@@ -3,7 +3,7 @@ import { getAllUsers, getUserData } from "../services/all_api";
 
 export const UserContext = createContext();
 export const UserContextProvider = (props) => {
-  const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
+  const [userId, setUserId] = useState();
   const [userLogged,setUserLogged]=useState(false)
   const [loggedUserData, setLoggedUserData] = useState({});
     const [allUsers, setAllUsers] = useState([]);
@@ -13,15 +13,17 @@ export const UserContextProvider = (props) => {
       setAllUsers(result.data);
     };
  
-  const fetchLoggedUserData = async () => {    
+  const fetchLoggedUserData = async (userId) => {    
     const result = await getUserData({userId});
     setLoggedUserData(result.data)
   };
 
   useEffect(() => {    
-    fetchLoggedUserData();
+    setUserId(sessionStorage.getItem("userId"))
+    // log
+    fetchLoggedUserData(userId);
     fetchAllUsers();
-  }, [userId]);
+  }, [userId,userLogged]);
 
   const value = { userId, setUserId,loggedUserData, setLoggedUserData,userLogged,setUserLogged ,allUsers, setAllUsers};
   return (

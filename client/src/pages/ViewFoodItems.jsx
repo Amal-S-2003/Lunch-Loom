@@ -3,15 +3,20 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FoodContext } from "../context/FoodContext";
 import { toast, ToastContainer } from "react-toastify";
-import { addNewFood } from "../services/all_api";
+import { addNewFood, getFoodData, updateFood } from "../services/all_api";
 import { server_url } from "../services/server_url";
 function ViewFoodItems() {
   const { allFoodItems } = useContext(FoodContext);
   const [query, setQuery] = useState("");
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const [isImageUpdated, setIsImageUpdated] = useState(false);
+  const handleClose = () => {
+    setShow(false);
+    setIsEdit(false);
+  };
   const handleShow = () => setShow(true);
   const [preview, setPreview] = useState();
+  const [isEdit, setIsEdit] = useState(false);
 
   const filteredFoods = allFoodItems.filter((food) =>
     Object.values(food).some((value) =>
@@ -29,7 +34,7 @@ function ViewFoodItems() {
   const handleAddFood = async (e) => {
     e.preventDefault();
     const { foodImage, foodName, description, type, price } = foodData;
-    if (!foodImage||! foodName|| !description|| !type|| !price) {
+    if (!foodImage || !foodName || !description || !type || !price) {
       toast.info("please fill the input fields");
     } else {
       const reqBody = new FormData();
@@ -38,7 +43,7 @@ function ViewFoodItems() {
       reqBody.append("description", description);
       reqBody.append("type", type);
       reqBody.append("price", price);
-      
+
       const reqHeader = {
         "Content-Type": "multipart/form-data",
       };
@@ -66,26 +71,48 @@ function ViewFoodItems() {
 
     handleClose();
   };
+  const editFood = async (foodId) => {
+    setIsEdit(true);
+    handleShow();
+    const result = await getFoodData({ foodId });
+    setFoodData(result.data[0]);
+  };
+  const handleEditFood = async () => {
+    const reqHeader = {
+      "Content-Type": "multipart/form-data",
+    };
+    try {
+      const reqBody = new FormData();
+      reqBody.append("foodId", foodData._id);
+      isImageUpdated && reqBody.append("foodImage", foodData.foodImage);
+      reqBody.append("foodName", foodData.foodName);
+      reqBody.append("description", foodData.description);
+      reqBody.append("type", foodData.type);
+      reqBody.append("price", foodData.price);
+
+      const result = await updateFood(reqBody, reqHeader);
+      toast.success(result.data);
+      handleClose();
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(foodData._id, foodData);
+  };
+  // const imageChagnged=()=>{
+  //     if (foodData.foodImage) {
+  //     const objectUrl = URL.createObjectURL(foodData.foodImage);
+  //     setPreview(objectUrl);
+
+  //     return () => URL.revokeObjectURL(objectUrl);
+  //   }
+  // }
   useEffect(() => {
-    if (
-      foodData.foodImage.type == "image/png" ||
-      foodData.foodImage.type == "image/jpg" ||
-      foodData.foodImage.type == "image/jpeg"
-    ) {
-      // setPreview(URL.createObjectURL(registerData.profilePicture));
+    if (!isEdit&&foodData.foodImage) {
       const objectUrl = URL.createObjectURL(foodData.foodImage);
       setPreview(objectUrl);
 
       return () => URL.revokeObjectURL(objectUrl);
-    } else {
-      toast.warn("please upload only following formats  (png/jpg/jpeg)");
     }
-    // if (foodData.foodImage) {
-      // const objectUrl = URL.createObjectURL(foodData.foodImage);
-      // setPreview(objectUrl);
-
-      // return () => URL.revokeObjectURL(objectUrl);
-    // }
   }, [foodData.foodImage]);
   return (
     <>
@@ -134,7 +161,7 @@ function ViewFoodItems() {
                   <th scope="row">{index + 1}</th>
                   <td>
                     <img
-                     src={`${server_url}/uploads/${food.foodImage}`}
+                      src={`${server_url}/uploads/${food.foodImage}`}
                       alt={food.foodName}
                       style={{ width: "150px" }}
                     />
@@ -145,7 +172,10 @@ function ViewFoodItems() {
                   <td>{food.price}</td>
 
                   <td>
-                    <i class="fa-solid fa-pen-to-square text-danger"></i>{" "}
+                    <i
+                      onClick={() => editFood(food._id)}
+                      class="fa-solid fa-pen-to-square text-danger"
+                    ></i>
                   </td>
                 </tr>
               ))
@@ -164,7 +194,9 @@ function ViewFoodItems() {
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body className="py-3 px-5 d-flex flex-column gap-3">
-          <h1 className="text-center text-capitalize">Add New Food</h1>
+          <h1 className="text-center text-capitalize">
+            {isEdit ? "Eidt Food" : "Add New Food"}
+          </h1>
           <label
             className="w-100 d-flex justify-content-center"
             style={{ cursor: "pointer" }}
@@ -172,29 +204,42 @@ function ViewFoodItems() {
             <input
               type="file"
               hidden
-              onChange={(e) =>
+              onChange={(e) => {
+                setIsImageUpdated(true);
                 setFoodData({
                   ...foodData,
                   foodImage: e.target.files[0],
-                })
-              }
+                });
+              }}
             />
-            <img
-              src={
-                preview
-                  ? preview
-                  : "https://static.vecteezy.com/system/resources/previews/047/411/214/non_2x/food-logo-icon-symbol-silhouette-on-white-background-free-vector.jpg"
-              }
-              alt="food placeholder"
-              style={{ width: "10rem" }}
-            />
+            {isEdit ? (
+              <img
+                src={
+                  isImageUpdated
+                    ? URL.createObjectURL(foodData.foodImage)
+                    : `${server_url}/uploads/${foodData.foodImage}`
+                }
+                alt="food placeholder"
+                style={{ width: "10rem" }}
+              />
+            ) : (
+              <img
+                src={
+                  preview
+                    ? preview
+                    : "https://static.vecteezy.com/system/resources/previews/047/411/214/non_2x/food-logo-icon-symbol-silhouette-on-white-background-free-vector.jpg"
+                }
+                alt="food placeholder"
+                style={{ width: "10rem" }}
+              />
+            )}
           </label>
           <input
             type="text"
             name="name"
             placeholder="Food Name"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={foodData.name}
+            value={ foodData.foodName }
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, foodName: e.target.value })
@@ -205,7 +250,7 @@ function ViewFoodItems() {
             name="description"
             placeholder="Description"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={foodData.description}
+            value={ foodData.description}
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, description: e.target.value })
@@ -214,7 +259,7 @@ function ViewFoodItems() {
           <select
             name="category"
             className="form-control  rounded-3 border-1 border-secondary fw-bold"
-            value={foodData.category}
+            value={ foodData.category }
             // onChange={handleInputChange}
             onChange={(e) => setFoodData({ ...foodData, type: e.target.value })}
           >
@@ -227,7 +272,7 @@ function ViewFoodItems() {
             name="price"
             placeholder="Price"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={foodData.price}
+            value={foodData.price }
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, price: e.target.value })
@@ -238,12 +283,18 @@ function ViewFoodItems() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleAddFood}>
-            Add
-          </Button>
+          {isEdit ? (
+            <Button variant="primary" onClick={handleEditFood}>
+              Edit
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={handleAddFood}>
+              Add
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

@@ -18,11 +18,23 @@ router.post(
   multerConfig.single("profilePicture"),
   userController.register
 );
-// User Register
+// Update profile
 router.post(
   "/updateProfile",
   multerConfig.single("profilePicture"),
   userController.updateProfile
+);
+// Update Mess
+router.post(
+  "/updateMess",
+  multerConfig.single("messImage"),
+  messController.updateMess
+);
+// update food
+router.post(
+  "/updateFood",
+  multerConfig.single("foodImage"),
+  foodController.updateFood
 );
 // addNewFood
 router.post(
@@ -47,8 +59,11 @@ router.post("/edit-menu", jwtMiddleWare, messController.addMenu);
 // Get Mess Deatils fro mess Owner
 router.post("/get-mess", messController.getMessDetails);
 
-// Get User Details
+// Get User Details 
 router.post("/get-user", userController.getUserDeatils);
+
+// Get Food Details
+router.post("/get-food", foodController.getFoodDeatils);
 
 // Updatethe menu
 router.put("/update-menu", messController.updateWeeklyMenu);
@@ -92,4 +107,4 @@ router.get("/cancelSub",subscriptionController.deleteLast)
 // router.post("/success", subscriptionController.addSubscription);
 
 module.exports = router;
- 
+   
