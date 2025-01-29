@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  clearCurrentPlan,
   getUserData,
   getUserSubscriptions,
   updateProfile,
@@ -17,12 +18,14 @@ import { UserContext } from "../context/UserContext";
 function UserProfile() {
   // const [userId, setUserId] = useState(sessionStorage.getItem("userId"));
   const [loggedUserData, setLoggedUserData] = useState({});
+  const [currentPlan, setCurrentPlan] = useState(null);
   const [subscription, setsubScription] = useState(null);
   const [duration, setDuration] = useState(null);
   const [show, setShow] = useState(false);
   const [preview, setPreview] = useState();
   const [userData, setUserData] = useState({});
-  const { userId,setUserId,userLogged,setUserLogged} = useContext(UserContext);
+  const { userId, setUserId, userLogged, setUserLogged } =
+    useContext(UserContext);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -30,8 +33,11 @@ function UserProfile() {
     try {
       const result = await getUserData({ userId });
       console.log(result);
-      
+
       setLoggedUserData(result.data[0]);
+      setCurrentPlan(result.data[0].currentPlan);
+      console.log("currentPlan,currentPlan", currentPlan);
+
       setUserData({
         userId: userId,
         name: loggedUserData.name,
@@ -48,31 +54,34 @@ function UserProfile() {
   const fetchUserSubscriptions = async () => {
     try {
       const result = await getUserSubscriptions({ userId });
-
-      setsubScription(result.data[0]);
-      const calculateDuration = (end) => {
-        const startDate = new Date();
-        const endDate = new Date(end);
-        const timeDifference = endDate - startDate; // Difference in milliseconds
-        const daysDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert to days
-        return Math.round(daysDifference); // Round to the nearest whole number
-      };
-      // const { startingDate, endingDate } = subscription;
-      const abc = calculateDuration(
-        // result.data[0].startingDate,
-        result.data[0].endingDate
-      );
-      setDuration(abc);
+      if (result.status == 200) {
+        setsubScription(result.data[0]);
+        const calculateDuration = (end) => {
+          const startDate = new Date();
+          const endDate = new Date(end);
+          const timeDifference = endDate - startDate; // Difference in milliseconds
+          const daysDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert to days
+          return Math.round(daysDifference); // Round to the nearest whole number
+        };
+        // const { startingDate, endingDate } = subscription;
+        const abc = calculateDuration(
+          // result.data[0].startingDate,
+          currentPlan.endingDate
+        );
+        setDuration(abc);
+      } else {
+        setsubScription([]);
+      }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
 
   const navigate = useNavigate();
-  const logout = async() => {
+  const logout = async () => {
     sessionStorage.clear();
-    setUserId(null)
-    setUserLogged(false)
+    setUserId(null);
+    setUserLogged(false);
     await navigate("/");
   };
   const handleChange = (e) => {
@@ -101,10 +110,9 @@ function UserProfile() {
     console.log("Updated User Data:", userData);
     handleClose();
     fetchLoggedUserData();
-
   };
 
-  useEffect(() => {    
+  useEffect(() => {
     if (userData.profilePicture) {
       const objectUrl = URL.createObjectURL(userData.profilePicture);
       setPreview(objectUrl);
@@ -115,6 +123,19 @@ function UserProfile() {
     fetchUserSubscriptions();
   }, [userId, userData.profilePicture]);
 
+  const manageCurrentplan = async (duration) => {
+    console.log(currentPlan);
+    
+    if (currentPlan && duration <= 0) {
+      console.log("currentPlan===>",currentPlan);
+      
+      const result = await clearCurrentPlan({userId});
+      console.log("duration", duration, userId);
+    }
+  };
+  useEffect(() => {
+    manageCurrentplan(duration);
+  }, [duration]);
   return (
     <div>
       <div className="card rounded shadow mx-40 mt-32 p-5 flex flex-col lg:flex-row">
@@ -178,42 +199,42 @@ function UserProfile() {
             <h2 className="text-xl font-bold text-gray-800 mb-4">
               Subscription Details
             </h2>
-            {subscription && duration > 0 ? (
+            {currentPlan ? (
               <div className="space-y-3">
                 <div>
                   <span className="font-semibold text-gray-600">
                     Mess Name:{" "}
                   </span>
-                  <span className="text-gray-800">{subscription.messName}</span>
+                  <span className="text-gray-800">{currentPlan.messName}</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-600">Details: </span>
-                  <span className="text-gray-800">{subscription.details}</span>
+                  <span className="text-gray-800">{currentPlan.details}</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-600">
                     Subscription Type:{" "}
                   </span>
                   <span className="text-gray-800">
-                    {subscription.subscriptionType}
+                    {currentPlan.subscriptionType}
                   </span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-600">
                     Duration:{" "}
                   </span>
-                  <span className="text-gray-800">{subscription.duration}</span>
+                  <span className="text-gray-800">{currentPlan.duration}</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-600">Price: </span>
-                  <span className="text-gray-800">₹{subscription.price}</span>
+                  <span className="text-gray-800">₹{currentPlan.price}</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-600">
                     Starting Date:{" "}
                   </span>
                   <span className="text-gray-800">
-                    {new Date(subscription.startingDate).toLocaleString()}
+                    {new Date(currentPlan.startingDate).toLocaleString()}
                   </span>
                 </div>
                 <div>
@@ -221,7 +242,7 @@ function UserProfile() {
                     Ending Date:{" "}
                   </span>
                   <span className="text-gray-800">
-                    {new Date(subscription.endingDate).toLocaleString()}
+                    {new Date(currentPlan.endingDate).toLocaleString()}
                   </span>
                 </div>
                 {/* {duration>0? */}
@@ -238,19 +259,29 @@ function UserProfile() {
                 <p className="text-slate-800 text-xl font-bold ">
                   Currently have no subscriptions!!!
                 </p>
-                <button onClick={()=>navigate('/')} className="bg bg-gray-700 text-white px-3 py-2 rounded-lg">
+                <button
+                  onClick={() => navigate("/")}
+                  className="bg bg-gray-700 text-white px-3 py-2 rounded-lg"
+                >
                   Find Mess Now
                 </button>
               </div>
             )}
           </div>
-
-          <button
-            onClick={() => navigate("/myOrders")}
-            className="bg-slate-800 mt-5 rounded-lg px-5 fw-medium text-white py-2"
-          >
-            View Orders
-          </button>
+          <div className="btns flex justify-between gap-5">
+            <button
+              onClick={() => navigate("/myOrders")}
+              className="bg-slate-800 mt-5 rounded-lg px-5 fw-medium text-white py-2"
+            >
+              View Orders
+            </button>
+            <button
+              onClick={() => navigate("/history")}
+              className="bg-slate-800 mt-5 rounded-lg px-5 fw-medium text-white py-2"
+            >
+              View History
+            </button>
+          </div>
         </div>
       </div>
       <Modal show={show} onHide={handleClose} centered>
@@ -363,4 +394,3 @@ function UserProfile() {
 }
 
 export default UserProfile;
- 

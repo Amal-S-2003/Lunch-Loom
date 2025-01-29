@@ -35,6 +35,7 @@ exports.register = async (req, res) => {
         location,
         profilePicture,
         password,
+        currentPlan:{}
       });
       await newUser.save();
       res.status(200).json(newUser);

@@ -95,7 +95,7 @@ router.post("/get-comments", commentController.getAllComments);
 
 router.post("/getUserOrders", orderController.getUserOrders);
 
-router.post("/getUserSubscriptions", subscriptionController.subscriptionController);
+router.post("/getUserSubscriptions", subscriptionController.getUserSubscriptions);
 
 router.post("/getMessCustomers", subscriptionController.getMessCustomers);
 
@@ -103,7 +103,10 @@ router.delete("/delete-mess", messController.deleteMenu);
 
 router.post("/checkout", subscriptionController.initiateSubscription);
 
-router.get("/cancelSub",subscriptionController.deleteLast)
+router.post("/verifyStripe",subscriptionController.verifyStripe)
+router.post("/clearCurrentPlan",subscriptionController.clearCurrentPlan)
+
+router.get("/cancelSub",subscriptionController.deleteLast) 
 // router.post("/success", subscriptionController.addSubscription);
 
 module.exports = router;

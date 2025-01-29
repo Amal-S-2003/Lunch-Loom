@@ -92,7 +92,7 @@ function OrderPage() {
             />
             Cash on Delivery (COD)
           </label>
-          <label>
+          {/* <label>
             <input
               type="radio"
               name="payment"
@@ -101,7 +101,7 @@ function OrderPage() {
               className="mr-2"
             />
             Credit/Debit Card
-          </label>
+          </label> */}
           <label>
             <input
               type="radio"

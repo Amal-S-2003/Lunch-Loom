@@ -148,3 +148,12 @@ export const subcriptionFunction=async(reqBody)=>{
 }
 
  
+export const verifyStripe=async(reqBody)=>{
+  return await commonAPI("POST",  `${server_url}/verifyStripe`,reqBody,"")
+}
+ 
+export const clearCurrentPlan=async(reqBody)=>{
+  return await commonAPI("POST",  `${server_url}/clearCurrentPlan`,reqBody,"")
+}
+
+ 

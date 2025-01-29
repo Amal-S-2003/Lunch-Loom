@@ -15,6 +15,10 @@ export const UserContextProvider = (props) => {
  
   const fetchLoggedUserData = async (userId) => {    
     const result = await getUserData({userId});
+    if(userId){
+
+      setUserLogged(true)
+    }
     setLoggedUserData(result.data)
   };
 

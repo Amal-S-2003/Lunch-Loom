@@ -1,36 +1,23 @@
-
 // ========================================================
 
 const subscriptions = require("../Model/subscriptionSchema");
+const users = require("../Model/userSchema");
 const stripe = require("stripe")(process.env.stripe_secret_key);
 
 exports.initiateSubscription = async (req, res) => {
-  const { name, details, price, duration, messName, messId, userId ,username,
+  const {
+    name,
+    details,
+    price,
+    duration,
+    messName,
+    messId,
+    messImage,
+    userId,
+    username,
     email,
-    phone} = req.body;
-console.log("initiateSubscription",name, details, price, duration, messName, messId, userId ,username,
-  email,
-  phone);
-
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: "inr",
-          product_data: {
-            name: messName,
-            description: `Details: ${details} \n Duration: ${duration} `,
-          },
- 
-          unit_amount: price * 100,
-        },
-        quantity: 1,
-      },
-    ],
-    mode: "payment",
-    success_url: `http://localhost:5173/success`,
-    cancel_url: "http://localhost:5173/cancel",
-  }); 
+    phone,
+  } = req.body;
   const startingDate = new Date();
   const endingDate = new Date();
 
@@ -44,22 +31,112 @@ console.log("initiateSubscription",name, details, price, duration, messName, mes
     duration,
     messName,
     messId,
+    messImage,
     userId,
     startingDate,
     endingDate,
     username,
     email,
-    phone
+    phone,
   });
   await newSubscription.save();
-  res.status(200).json(session.url);
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: messName,
+              description: `Details: ${details} \n Duration: ${duration} `,
+            },
+
+            unit_amount: price * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `http://localhost:5173/verify?success=true&subscriptionId=${newSubscription._id}`,
+      cancel_url: `http://localhost:5173/verify?success=false&subscriptionId=${newSubscription._id}`,
+    });
+    res.status(200).json({ success: true, session_url: session.url });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ success: false, message: err });
+  }
 };
 
-exports.subscriptionController=async(req,res)=>{
-const {userId}=req.body;
+exports.verifyStripe = async (req, res) => {
+  console.log("verifyStripe,verifyStripe,verifyStripe");
+  const { userId, success, subscriptionId } = req.body;
+  console.log(userId, success, subscriptionId, "userId,success,subscriptionId");
+  try {
+    if (success == "true") {
+      const subDetails = await subscriptions.findByIdAndUpdate(
+        { _id: subscriptionId },
+        { success: "true" }
+      );
+      const subsrciptionData = await subscriptions.findOne({
+        _id: subscriptionId,
+        success: "true",
+      });
+      console.log("subsrciptionData", subsrciptionData);
 
-try { 
-    const userSubscriptions = await subscriptions.find({ userId });
+      const userData = await users.findByIdAndUpdate(
+        { _id: userId },
+        { $push: { history: subsrciptionData }, currentPlan: subsrciptionData }
+        // { currentPlan: subsrciptionData }
+      );
+
+      console.log("userData", userData);
+
+      // const result = await users.findByIdAndUpdate(
+      //   { _id: userId },
+      //   { $push: { history: subDetails } },
+      //   { new: true } // This option returns the updated document
+      // );
+      // console.log("result in verifyStripe", result);
+      res.status(200).json("successfull");
+    } else {
+      const result = await users.findByIdAndDelete({ _id: subscriptionId });
+      res.status(401).json("unsuccessfull");
+    }
+  } catch (error) {
+    console.log("error", error);
+
+    res.status(401).json("unsuccessfull");
+  }
+};
+
+exports.clearCurrentPlan = async (req, res) => {
+  console.log("clearCurrentPlan");
+  
+  const {userId}=req.body;
+  console.log(userId);
+  
+  try {
+    
+    const userData = await users.findByIdAndUpdate(
+      { _id: userId },
+      { currentPlan: {} }
+    );
+    console.log(userData);
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+    
+};
+exports.getUserSubscriptions = async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const userSubscriptions = await subscriptions.find(
+      { userId, success: "true" } // Query: Find documents where userId matches and success is true
+    );
+
     if (!userSubscriptions || userSubscriptions.length === 0) {
       return res
         .status(404)
@@ -70,30 +147,32 @@ try {
     console.error("Error fetching userSubscriptions:", error);
     res.status(500).json({ message: "Server error." });
   }
-}
+};
 
+exports.getMessCustomers = async (req, res) => {
+  const { messId } = req.body;
 
-exports.getMessCustomers=async(req,res)=>{
-  const {messId}=req.body;
-  
-  try { 
-      const customers = await subscriptions.find({ messId });
-      if (!customers || customers.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No customers found for this mess." });
-      }
-      res.status(200).json(customers);
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-      res.status(500).json({ message: "Server error." });
-    }
-  }
-exports.deleteLast = async (req,res) => {
-  console.log("deleteLast");
-  
   try {
-    const deletedDocument = await subscriptions.findOneAndDelete({}, { sort: { createdAt: -1 } });
+    const customers = await subscriptions.find({ messId });
+    if (!customers || customers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No customers found for this mess." });
+    }
+    res.status(200).json(customers);
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+exports.deleteLast = async (req, res) => {
+  console.log("deleteLast");
+
+  try {
+    const deletedDocument = await subscriptions.findOneAndDelete(
+      {},
+      { sort: { createdAt: -1 } }
+    );
     if (deletedDocument) {
       console.log("Deleted Document:", deletedDocument);
     } else {

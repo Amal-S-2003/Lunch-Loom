@@ -1,6 +1,16 @@
-import React, { useContext } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { MessContext } from "../context/MessContext";
+import { getMessCustomers } from "../services/all_api";
 
 const subscriptionRates = [
   {
@@ -57,7 +67,52 @@ const subscriptionRates = [
 ];
 
 const MessDashboard = () => {
-  const {count,setCount}=useContext(MessContext)
+  const { count, setCount } = useContext(MessContext);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [activeUsersCount, setActiveUsersCount] = useState(0);
+  const messId = sessionStorage.getItem("messId");
+
+  const fetchMessCustomers = async () => {
+    const result = await getMessCustomers({ messId })
+     const subscriptions=result.data
+     
+      getTotalRevenue(subscriptions);
+    };
+    const getTotalRevenue = (subscriptions) => {
+    console.log("2");
+    console.log(subscriptions);
+    
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-based index (January = 0)
+    const currentYear = currentDate.getFullYear();
+    const total = subscriptions
+      .filter((sub) => {
+        const subDate = new Date(sub.startingDate); // Convert string to Date
+        if (isNaN(subDate)) {
+          console.error(`Invalid date: ${sub.startingDate}`);
+          return false;
+        }
+        return (
+          subDate.getMonth() === currentMonth &&
+          subDate.getFullYear() === currentYear
+        );
+      })
+      .reduce((sum, sub) => sum + sub.price, 0);
+      const totalIncome = subscriptions.reduce((sum, sub) => sum + sub.price, 0);
+
+    setTotalRevenue(total);
+    setTotalIncome(totalIncome);
+    const activeUsers = subscriptions.filter(sub => {
+      const startDate = new Date(sub.startingDate);
+      const endDate = new Date(sub.endingDate);
+    
+      return startDate <= currentDate && currentDate <= endDate; // Active if current date is within range
+    }).length;
+    setActiveUsersCount(activeUsers)
+  };
+  
+
   // Combine data for all subscription types
   const combinedData = subscriptionRates[0].rates.map((item, index) => ({
     month: item.month,
@@ -65,12 +120,30 @@ const MessDashboard = () => {
     Monthly: subscriptionRates[1].rates[index].rate,
     Yearly: subscriptionRates[2].rates[index].rate,
   }));
+  useEffect(() => {
+    fetchMessCustomers()
+  }, [messId]);
 
-  return (
+  return ( 
     <div className="container mx-auto p-6">
-
+      <div className="flex flex-wrap gap-3 justify-between m-5">
+        <div className="card shadow rounded-lg lg:w-1/4 sm:w-100 text-center px-5 py-3 bg-gray-50">
+          <h2 className="text-xl text-gray-600">Active Customers</h2>
+          <h1 className="text-4xl font-bold text-teal-600">{activeUsersCount}</h1>
+        </div>
+        <div className="card shadow rounded-lg lg:w-1/4 sm:w-100 text-center px-5 py-3 bg-gray-50">
+          <h2 className="text-2xl text-gray-600">This Month Revenue</h2>
+          <h1 className="text-4xl font-bold text-teal-600">₹{totalRevenue}</h1>
+        </div>
+        <div className="card shadow rounded-lg lg:w-1/4 sm:w-100 text-center px-5 py-3 bg-gray-50">
+          <h2 className="text-2xl text-gray-600">Total Income</h2>
+          <h1 className="text-4xl font-bold text-teal-600">₹{totalIncome}</h1>
+        </div>
+      </div>
       <h1>{count}</h1>
-      <h1 className="text-2xl font-bold mb-4">Subscription Rates Over Months</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        Subscription Rates Over Months
+      </h1>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={combinedData}>
           <CartesianGrid strokeDasharray="3 3" />

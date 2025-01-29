@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { server_url } from "../services/server_url";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const MessCard = ({ mess }) => {
   const navigate = useNavigate();
-const lowestPlan = mess.subscriptionPlans.reduce((prev, curr) =>
+  const lowestPlan = mess.subscriptionPlans.reduce((prev, curr) =>
     prev.price < curr.price ? prev : curr
   );
-
+  const { userLogged } = useContext(UserContext);
+  
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
-      {/* Image */}
       <img
-          src={`${server_url}/uploads/${mess.messImage}`}
+        src={`${server_url}/uploads/${mess.messImage}`}
         alt={mess.messName}
         className="w-full h-48 object-cover "
       />
@@ -30,8 +31,16 @@ const lowestPlan = mess.subscriptionPlans.reduce((prev, curr) =>
           <span className="font-semibold">₹{lowestPlan.price}</span> -{" "}
           {lowestPlan.name} Plan
         </p>
-        <button className="bg-gray-800 mt-3 text-white p-2 rounded w-32 items-start" onClick={()=>navigate(`mess-details/${mess._id}`)}>Enguire Now</button>
-
+        <button
+          className="bg-gray-800 mt-3 text-white p-2 rounded w-32 items-start"
+          onClick={() =>
+            userLogged
+              ? navigate(`mess-details/${mess._id}`)
+              : navigate("/login")
+          }
+        >
+          Enguire Now
+        </button>
       </div>
     </div>
   );

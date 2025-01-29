@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema({
   history: {
     type: Array,
   },
+  currentPlan: {
+    type: Object,
+    required: true,
+    default:{}
+  },
+
   cart: [
     {
       foodId: { type: mongoose.Schema.Types.ObjectId, ref: "Food" },

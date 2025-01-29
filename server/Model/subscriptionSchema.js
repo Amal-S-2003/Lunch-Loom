@@ -41,6 +41,10 @@ const subscriptionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  messImage: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String, 
     required: true,
@@ -49,6 +53,11 @@ const subscriptionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  success:{
+    type:String,
+    required:true,
+    default:"false"
+  }
 });
 const subscriptions = mongoose.model("subscriptions", subscriptionSchema);
 module.exports = subscriptions;
