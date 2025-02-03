@@ -4,28 +4,47 @@ import { server_url } from "./server_url";
 // User register
 export const registerAPI = async (reqBody, reqHeader) => {
   return await commonAPI("POST", `${server_url}/register`, reqBody, reqHeader);
-}; 
+};
 
 // updateProfile
 export const updateProfile = async (reqBody, reqHeader) => {
-  return await commonAPI("POST", `${server_url}/updateProfile`, reqBody, reqHeader?reqHeader:"");
-}; 
+  return await commonAPI(
+    "POST",
+    `${server_url}/updateProfile`,
+    reqBody,
+    reqHeader ? reqHeader : ""
+  );
+};
 
 // updateFood
 export const updateFood = async (reqBody, reqHeader) => {
-  return await commonAPI("POST", `${server_url}/updateFood`, reqBody, reqHeader?reqHeader:"");
-}; 
+  return await commonAPI(
+    "POST",
+    `${server_url}/updateFood`,
+    reqBody,
+    reqHeader ? reqHeader : ""
+  );
+};
+
+// updateFood
+export const deleteAfood = async (FoodId) => {
+  return await commonAPI("DELETE", `${server_url}/deleteFood`, FoodId, "");
+};
 // updateMess
 export const updateMess = async (reqBody, reqHeader) => {
-  console.log("updateFood reqBody",reqBody);
-  return await commonAPI("POST", `${server_url}/updateMess`, reqBody, reqHeader?reqHeader:"");
-}; 
-
+  console.log("updateFood reqBody", reqBody);
+  return await commonAPI(
+    "POST",
+    `${server_url}/updateMess`,
+    reqBody,
+    reqHeader ? reqHeader : ""
+  );
+};
 
 // User addNewFood
 export const addNewFood = async (reqBody, reqHeader) => {
   return await commonAPI("POST", `${server_url}/add-food`, reqBody, reqHeader);
-}; 
+};
 // User Login
 export const loginApi = async (user) => {
   return await commonAPI("POST", `${server_url}/login`, user, "");
@@ -50,11 +69,24 @@ export const getAllOrders = async () => {
 };
 // updateOrderStatus
 export const updateOrderStatus = async (reqBody) => {
-  return await commonAPI("PUT", `${server_url}/update-delivery-status`, reqBody, "");
+  return await commonAPI(
+    "PUT",
+    `${server_url}/update-delivery-status`,
+    reqBody,
+    ""
+  );
+};
+// getOrderDetails
+export const getOrderDetails = async (orderId) => {
+  return await commonAPI("GET", `${server_url}/order/${orderId}`, "", "");
 };
 // updateWeeklyMenu
-export const updateWeeklyMenu = async (newMenu) => {  
+export const updateWeeklyMenu = async (newMenu) => {
   return await commonAPI("PUT", `${server_url}/update-menu`, newMenu, "");
+};
+// updateSubscriptionPlans
+export const updateSubscriptionPlans = async (newPlans) => {
+  return await commonAPI("PUT", `${server_url}/update-plans`, newPlans, "");
 };
 
 // Mess register
@@ -125,12 +157,17 @@ export const getUserOrders = async (userId) => {
 
 // getUserSubscriptions
 export const getUserSubscriptions = async (userId) => {
-  return await commonAPI("POST", `${server_url}/getUserSubscriptions`, userId, "");
-}; 
+  return await commonAPI(
+    "POST",
+    `${server_url}/getUserSubscriptions`,
+    userId,
+    ""
+  );
+};
 // getMessCustomers
 export const getMessCustomers = async (messId) => {
   return await commonAPI("POST", `${server_url}/getMessCustomers`, messId, "");
-}; 
+};
 
 // getUserSubscriptions
 export const deleteLastSub = async () => {
@@ -142,18 +179,14 @@ export const deleteMenu = async (messId) => {
   return await commonAPI("DELETE", `${server_url}/delete-mess`, messId, "");
 };
 
+export const subcriptionFunction = async (reqBody) => {
+  return await commonAPI("POST", `${server_url}/checkout`, reqBody, "");
+};
 
-export const subcriptionFunction=async(reqBody)=>{
-  return await commonAPI("POST",  `${server_url}/checkout`,reqBody,"")
-}
+export const verifyStripe = async (reqBody) => {
+  return await commonAPI("POST", `${server_url}/verifyStripe`, reqBody, "");
+};
 
- 
-export const verifyStripe=async(reqBody)=>{
-  return await commonAPI("POST",  `${server_url}/verifyStripe`,reqBody,"")
-}
- 
-export const clearCurrentPlan=async(reqBody)=>{
-  return await commonAPI("POST",  `${server_url}/clearCurrentPlan`,reqBody,"")
-}
-
- 
+export const clearCurrentPlan = async (reqBody) => {
+  return await commonAPI("POST", `${server_url}/clearCurrentPlan`, reqBody, "");
+};

@@ -39,7 +39,7 @@ const MessCard = ({ mess }) => {
               : navigate("/login")
           }
         >
-          Enguire Now
+          View Details
         </button>
       </div>
     </div>

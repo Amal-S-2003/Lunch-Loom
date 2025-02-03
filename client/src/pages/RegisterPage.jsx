@@ -100,7 +100,7 @@ const RegisterPage = () => {
               }
             />
             <img
-              className="w-32 h-32 rounded-full border-2 border-gray-300"
+              className="w-32 h-32 rounded-full border-2 border-gray-300 "
               src={preview ? preview : assets.profilePicture}
               alt="No Profile Image"
             />

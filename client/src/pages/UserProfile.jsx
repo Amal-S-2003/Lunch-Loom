@@ -20,7 +20,7 @@ function UserProfile() {
   const [loggedUserData, setLoggedUserData] = useState({});
   const [currentPlan, setCurrentPlan] = useState(null);
   const [subscription, setsubScription] = useState(null);
-  const [duration, setDuration] = useState(null);
+  const [duration, setDuration] = useState(1);
   const [show, setShow] = useState(false);
   const [preview, setPreview] = useState();
   const [userData, setUserData] = useState({});
@@ -35,7 +35,7 @@ function UserProfile() {
       console.log(result);
 
       setLoggedUserData(result.data[0]);
-      setCurrentPlan(result.data[0].currentPlan);
+      setCurrentPlan(result?.data[0]?.currentPlan);
       console.log("currentPlan,currentPlan", currentPlan);
 
       setUserData({
@@ -64,11 +64,11 @@ function UserProfile() {
           return Math.round(daysDifference); // Round to the nearest whole number
         };
         // const { startingDate, endingDate } = subscription;
-        const abc = calculateDuration(
+        const dur = calculateDuration(
           // result.data[0].startingDate,
-          currentPlan.endingDate
+          currentPlan?.endingDate
         );
-        setDuration(abc);
+        setDuration(dur);
       } else {
         setsubScription([]);
       }
@@ -113,60 +113,63 @@ function UserProfile() {
   };
 
   useEffect(() => {
+    fetchLoggedUserData();
+    fetchUserSubscriptions();
+    manageCurrentplan(duration);
     if (userData.profilePicture) {
       const objectUrl = URL.createObjectURL(userData.profilePicture);
       setPreview(objectUrl);
 
       return () => URL.revokeObjectURL(objectUrl);
     }
-    fetchLoggedUserData();
-    fetchUserSubscriptions();
-  }, [userId, userData.profilePicture]);
+  }, [userId, userData.profilePicture, duration]);
 
   const manageCurrentplan = async (duration) => {
     console.log(currentPlan);
-    
+
     if (currentPlan && duration <= 0) {
-      console.log("currentPlan===>",currentPlan);
-      
-      const result = await clearCurrentPlan({userId});
+      console.log("currentPlan===>", currentPlan);
+
+      const result = await clearCurrentPlan({ userId });
       console.log("duration", duration, userId);
     }
   };
-  useEffect(() => {
-    manageCurrentplan(duration);
-  }, [duration]);
+
   return (
     <div>
       <div className="card rounded shadow mx-40 mt-32 p-5 flex flex-col lg:flex-row">
         <div className="flex justify-center flex-col  items-center lg:w-1/3">
-          <div className="image rounded-full h-40 w-40 overflow-hidden ">
-            <img
-              src={`${server_url}/uploads/${loggedUserData.profilePicture}`}
-              alt={loggedUserData.profilePicture}
-            />
+          <div className="image rounded-full h-40 w-40 overflow-hidden " 
+          
+          style={{background:`url(${server_url}/uploads/${loggedUserData?.profilePicture})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",}}>
+            {/* <img
+              src={`${server_url}/uploads/${loggedUserData?.profilePicture}`}
+              alt={loggedUserData?.profilePicture}
+            /> */}
           </div>
 
           <div className="details flex flex-col gap-2 text-gray-600 mt-3">
             <h1 className="text-xl fw-medium">
               <i class=" me-2  fa-solid fa-user"></i>
-              {loggedUserData.name}
+              {loggedUserData?.name}
             </h1>
             <p>
               <i class="me-2 text-gray-700 fa-solid fa-phone"></i>
-              {loggedUserData.phone}
+              {loggedUserData?.phone}
             </p>
             <p>
               <i class="me-2 text-gray-700 fa-solid fa-envelope"></i>
-              {loggedUserData.email}
+              {loggedUserData?.email}
             </p>
             <p>
               <i class="me-2 text-gray-700 fa-solid fa-location-crosshairs"></i>
-              {loggedUserData.address}
+              {loggedUserData?.address}
             </p>
             <p>
               <i class="me-2 text-gray-700 fa-solid fa-location-dot"></i>
-              {loggedUserData.location}
+              {loggedUserData?.location}
             </p>
             <div className="btns">
               <button
@@ -308,7 +311,7 @@ function UserProfile() {
                   src={
                     preview
                       ? preview
-                      : `${server_url}/uploads/${loggedUserData.profilePicture}`
+                      : `${server_url}/uploads/${loggedUserData?.profilePicture}`
                   }
                   alt="No Profile Image"
                 />

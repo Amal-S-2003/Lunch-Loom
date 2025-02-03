@@ -101,6 +101,19 @@ exports.getFoodDeatils = async (req, res) => {
     res.status(401).json(error);
   }
 };
+exports.deleteAfood = async (req, res) => {
+  console.log("deleteAfood");
+  const { foodId } = req.body;
+  
+  try {
+    await foods.findByIdAndDelete({ _id: foodId });
+    res.status(200).json("Food Item Deleted");
+    
+  } catch (error) {
+    console.log(error);
+    res.status(401).json("Food Item Not Deleted");
+  }
+}; 
 
 exports.updateFood = async (req, res) => {
   const { foodId,foodName, description, type, price } = req.body;

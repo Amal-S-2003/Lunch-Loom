@@ -21,22 +21,20 @@ exports.messRegister = async (req, res) => {
     if (existingMess) {
       res.status(406).json("Mess with this phone number is already exist");
     } else {
-      const newMess=new messes(
-        {
-          messName,
-          phoneNumber,
-          emailAddress,
-          location,
-          address,
-          googleMapLink,
-          homeDelivery,
-          messDescription,
-          password,
-          subscriptionPlans,
-          weeklyMenu,
-          messImage
-        } 
-      )
+      const newMess = new messes({
+        messName,
+        phoneNumber,
+        emailAddress,
+        location,
+        address,
+        googleMapLink,
+        homeDelivery,
+        messDescription,
+        password,
+        subscriptionPlans,
+        weeklyMenu,
+        messImage,
+      });
       await newMess.save();
       res.status(200).json(newMess);
     }
@@ -82,12 +80,11 @@ exports.addMenu = async (req, res) => {
 
 exports.getMessDetails = async (req, res) => {
   const { messId } = req.body;
-  
+
   try {
     const result = await messes.findOne({ _id: messId });
     if (result) {
       res.status(200).json(result);
-      
     } else {
       res.status(406).json("Menu Is Not Found!!!");
     }
@@ -96,25 +93,42 @@ exports.getMessDetails = async (req, res) => {
   }
 };
 
-exports.updateWeeklyMenu=async(req,res)=>{
-const {messId,weeklyMenu}=req.body;
+exports.updateWeeklyMenu = async (req, res) => {
+  const { messId, weeklyMenu } = req.body;
 
-try {
-  const updatedMess = await messes.findByIdAndUpdate(
-    messId,
-    { weeklyMenu },
-    { new: true }
-  );
-  if (!updatedMess) return res.status(404).json({ message: "Mess not found" });
-  res.status(200).json(updatedMess);
-} catch (err) {
-  res.status(500).json({ error: err.message });
-}
-}
+  try {
+    const updatedMess = await messes.findByIdAndUpdate(
+      messId,
+      { weeklyMenu },
+      { new: true }
+    );
+    if (!updatedMess)
+      return res.status(404).json({ message: "Mess not found" });
+    res.status(200).json(updatedMess);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updatePlans = async (req, res) => {
+  const { messId, subscriptionPlans } = req.body;
+
+  try {
+    const updatedMess = await messes.findByIdAndUpdate(
+      messId,
+      { subscriptionPlans },
+      { new: true }
+    );
+    if (!updatedMess)
+      return res.status(404).json({ message: "Mess not found" });
+    res.status(200).json(updatedMess);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.deleteMenu = async (req, res) => {
   const { messId } = req.body;
   try {
-     
     const result = await messes.findOneAndUpdate(
       { _id: messId },
       { weeklyMenu: [] }
@@ -129,20 +143,18 @@ exports.deleteMenu = async (req, res) => {
   }
 };
 
-
-exports.getAllMesses=async(req,res)=>{
+exports.getAllMesses = async (req, res) => {
   try {
-    const result=await messes.find()
-    res.status(200).json(result)
+    const result = await messes.find();
+    res.status(200).json(result);
   } catch (error) {
     console.log(error);
-    
   }
-}
-
+};
 
 exports.updateMess = async (req, res) => {
-  const { messId,
+  const {
+    messId,
     messName,
     phoneNumber,
     emailAddress,
@@ -151,7 +163,7 @@ exports.updateMess = async (req, res) => {
     messDescription,
     googleMapLink,
     homeDelivery,
-     } = req.body;
+  } = req.body;
   const messImage = req?.file?.filename;
 
   try {

@@ -36,7 +36,7 @@ function MessOwnerHome() {
               <NavLink
                 className={({ isActive }) =>
                   `flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${
-                    isActive && "bg-blue-100 border-r-4 border-blue-500"
+                    isActive && "bg-gray-100 border-r-4 border-gray-500"
                   }`
                 }
                 to={"/admin-home/dashboard"}
@@ -46,7 +46,7 @@ function MessOwnerHome() {
               <NavLink
                 className={({ isActive }) =>
                   `flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${
-                    isActive && "bg-blue-100 border-r-4 border-blue-500"
+                    isActive && "bg-gray-100 border-r-4 border-gray-500"
                   }`
                 }
                 to={"/admin-home/users"}
@@ -56,7 +56,7 @@ function MessOwnerHome() {
               <NavLink
                 className={({ isActive }) =>
                   `flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${
-                    isActive && "bg-blue-100 border-r-4 border-blue-500"
+                    isActive && "bg-gray-100 border-r-4 border-gray-500"
                   }`
                 }
                 to={"/admin-home/mess"}
@@ -66,7 +66,7 @@ function MessOwnerHome() {
               <NavLink
                 className={({ isActive }) =>
                   `flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${
-                    isActive && "bg-blue-100 border-r-4 border-blue-500"
+                    isActive && "bg-gray-100 border-r-4 border-gray-500"
                   }`
                 }
                 to={"/admin-home/fooditems"}
@@ -76,7 +76,7 @@ function MessOwnerHome() {
               <NavLink
                 className={({ isActive }) =>
                   `flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${
-                    isActive && "bg-blue-100 border-r-4 border-blue-500"
+                    isActive && "bg-gray-100 border-r-4 border-gray-500"
                   }`
                 }
                 to={"/admin-home/view-all-orders"}

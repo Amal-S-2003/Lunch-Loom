@@ -24,7 +24,7 @@ const orderSchema = new mongoose.Schema(
       enum: ["COD", "Card", "UPI"],
       required: true,
     },
-    cartItems: [
+    orderItems: [
       {
         foodId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -33,6 +33,10 @@ const orderSchema = new mongoose.Schema(
         },
         foodName: {
           type: String,
+          required: true,
+        },
+        foodImage: {
+          type: String, // Storing the image URL or file path
           required: true,
         },
         qty: {

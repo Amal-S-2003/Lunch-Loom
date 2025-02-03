@@ -120,6 +120,7 @@ export const FoodContextProvider = (props) => {
   
   const value = {
     allFoodItems,
+    fetchAllFoods
   };
   return (
     <FoodContext.Provider value={value}>{props.children}</FoodContext.Provider>

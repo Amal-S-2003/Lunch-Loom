@@ -59,20 +59,27 @@ router.post("/edit-menu", jwtMiddleWare, messController.addMenu);
 // Get Mess Deatils fro mess Owner
 router.post("/get-mess", messController.getMessDetails);
 
-// Get User Details 
+// Get User Details
 router.post("/get-user", userController.getUserDeatils);
 
 // Get Food Details
 router.post("/get-food", foodController.getFoodDeatils);
 
+// Delete Food Details
+router.delete("/deleteFood", foodController.deleteAfood);
+
+// Get Order Details
+router.get("/order/:id", orderController.getOrderDeatils);
+
 // Updatethe menu
 router.put("/update-menu", messController.updateWeeklyMenu);
-
+// Updatethe plans
+router.put("/update-plans", messController.updatePlans);
 
 // Fetch All MessData
 router.get("/get-all-mess", messController.getAllMesses);
 
-// Fetch All Users 
+// Fetch All Users
 router.get("/get-all-user", userController.getAllUsers);
 
 // Fetch All Foods
@@ -84,18 +91,21 @@ router.put("/update-delivery-status", orderController.updateOrderStatus);
 
 router.put("/add-to-cart", foodController.addToCart);
 
-router.put("/update-cart", foodController.updateCart); 
+router.put("/update-cart", foodController.updateCart);
 
 router.post("/get-cart", foodController.getCartDetails);
 
-router.post("/place-order", orderController.placeOrder); 
- 
+router.post("/place-order", orderController.placeOrder);
+
 router.post("/add-comment", commentController.addComment);
 router.post("/get-comments", commentController.getAllComments);
 
 router.post("/getUserOrders", orderController.getUserOrders);
 
-router.post("/getUserSubscriptions", subscriptionController.getUserSubscriptions);
+router.post(
+  "/getUserSubscriptions",
+  subscriptionController.getUserSubscriptions
+);
 
 router.post("/getMessCustomers", subscriptionController.getMessCustomers);
 
@@ -103,11 +113,10 @@ router.delete("/delete-mess", messController.deleteMenu);
 
 router.post("/checkout", subscriptionController.initiateSubscription);
 
-router.post("/verifyStripe",subscriptionController.verifyStripe)
-router.post("/clearCurrentPlan",subscriptionController.clearCurrentPlan)
+router.post("/verifyStripe", subscriptionController.verifyStripe);
+router.post("/clearCurrentPlan", subscriptionController.clearCurrentPlan);
 
-router.get("/cancelSub",subscriptionController.deleteLast) 
+router.get("/cancelSub", subscriptionController.deleteLast);
 // router.post("/success", subscriptionController.addSubscription);
 
 module.exports = router;
-   

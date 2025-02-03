@@ -32,7 +32,7 @@ function FoodCard({ food }) {
     <div>
       <div
         className="card shadow rounded-lg p-4  w-60  flex flex-col gap-3"
-        style={{ minHeight: "450px" }}
+        style={{ minHeight: "480px" }}
       >
         <div
           className="h-40 w-full"

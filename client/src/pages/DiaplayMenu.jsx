@@ -9,6 +9,8 @@ const DisplayMenu = () => {
     try {
       const result = await getMessData({ messId });
       setMessData(result.data);
+      console.log(result.data);
+      
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -19,7 +21,7 @@ const DisplayMenu = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex justify-center items-center">
+    <div className="min-h-screen bg-gray-100 p-6 flex flex-col justify-center items-center">
       <div className="max-w-6xl w-full bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           Mess Menu
@@ -51,6 +53,22 @@ const DisplayMenu = () => {
           </table>
         </div>
       </div>
+
+      <div className="  flex flex-col items-center p-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">{messData.messName} Subscription Plans</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+        {messData.subscriptionPlans &&messData.subscriptionPlans.map((plan) => (
+          <div key={plan._id} className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 className="text-2xl font-semibold text-gray-700">{plan.name}</h2>
+            <p className="text-gray-500">{plan.duration}</p>
+            <p className="mt-4 text-gray-600">{plan.details}</p>
+            <div className="mt-4 text-xl font-bold text-gray-800">₹{plan.price}</div>
+           
+          </div>
+        ))}
+      </div>
+    </div>
     </div>
   );
 };

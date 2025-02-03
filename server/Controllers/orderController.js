@@ -1,23 +1,33 @@
 const orders = require("../Model/orderSchema");
 
 exports.placeOrder = async (req, res) => {
-  const { userId, name, phone, address, paymentMethod, cartItems, totalPrice } =
-    req.body;
-  const newOrder = new orders({
+  const {
     userId,
     name,
     phone,
     address,
     paymentMethod,
-    cartItems,
+    orderItems,
     totalPrice,
-  });
- await newOrder.save();
-
-  res.status(200).json("Order SuccessFull");
+  } = req.body;
+  try {
+    const newOrder = new orders({
+      userId,
+      name,
+      phone,
+      address,
+      paymentMethod,
+      orderItems,
+      totalPrice,
+    });
+    await newOrder.save();
+    res.status(200).json("Order SuccessFull");
+  } catch (error) {
+    res.status(401).json("Order is UnsuccessFull");
+  }
 };
 
-exports.getUserOrders = async (req, res) => {
+exports.getUserOrders = async (req, res) => {  
   const { userId } = req.body;
   try {
     const userOrders = await orders.find({ userId });
@@ -44,7 +54,6 @@ exports.getAllOrders = async (req, res) => {
 };
 
 exports.updateOrderStatus = async (req, res) => {
-  
   const { orderId, newStatus } = req.body;
 
   try {
@@ -55,5 +64,18 @@ exports.updateOrderStatus = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(401).json("Cannot Update the order status");
+  }
+};
+
+exports.getOrderDeatils = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+    const result = await orders.find({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json(error);
   }
 };

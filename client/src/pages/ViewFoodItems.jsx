@@ -3,10 +3,15 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FoodContext } from "../context/FoodContext";
 import { toast, ToastContainer } from "react-toastify";
-import { addNewFood, getFoodData, updateFood } from "../services/all_api";
+import {
+  addNewFood,
+  deleteAfood,
+  getFoodData,
+  updateFood,
+} from "../services/all_api";
 import { server_url } from "../services/server_url";
 function ViewFoodItems() {
-  const { allFoodItems } = useContext(FoodContext);
+  const { allFoodItems, fetchAllFoods } = useContext(FoodContext);
   const [query, setQuery] = useState("");
   const [show, setShow] = useState(false);
   const [isImageUpdated, setIsImageUpdated] = useState(false);
@@ -49,9 +54,7 @@ function ViewFoodItems() {
       };
       try {
         const result = await addNewFood(reqBody, reqHeader);
-        console.log("result=> ", result);
         if (result.status == 200) {
-          console.log("Food Added");
           setFoodData({
             foodImage: "",
             foodName: "",
@@ -60,8 +63,11 @@ function ViewFoodItems() {
             price: "",
           });
           toast.success("Food Added Successfully");
+          fetchAllFoods();
+          setIsImageUpdated(false);
         } else {
           toast.warn(result.response.data);
+          setIsImageUpdated(false);
         }
       } catch (error) {
         toast.error(error);
@@ -93,10 +99,29 @@ function ViewFoodItems() {
       const result = await updateFood(reqBody, reqHeader);
       toast.success(result.data);
       handleClose();
+      fetchAllFoods();
+      setIsImageUpdated(false);
     } catch (err) {
       console.log(err);
     }
-    console.log(foodData._id, foodData);
+  };
+  const deleteFood = async (foodId) => {
+    try {
+      console.log(foodId);
+
+      const result = await deleteAfood({ foodId });
+      console.log("resultresult", result);
+
+      if (result.status == 200) {
+        toast.success(result.data);
+        fetchAllFoods();
+      } else {
+        toast.error(result.response.data);
+      }
+    } catch (error) {
+      toast.warning("Food Item Is Not Deleted!!!");
+      console.log(error);
+    }
   };
   // const imageChagnged=()=>{
   //     if (foodData.foodImage) {
@@ -107,7 +132,7 @@ function ViewFoodItems() {
   //   }
   // }
   useEffect(() => {
-    if (!isEdit&&foodData.foodImage) {
+    if (!isEdit && foodData.foodImage) {
       const objectUrl = URL.createObjectURL(foodData.foodImage);
       setPreview(objectUrl);
 
@@ -152,6 +177,7 @@ function ViewFoodItems() {
               <th scope="col">Type</th>
               <th scope="col">Price</th>
               <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody className="p-5 ">
@@ -174,7 +200,13 @@ function ViewFoodItems() {
                   <td>
                     <i
                       onClick={() => editFood(food._id)}
-                      class="fa-solid fa-pen-to-square text-danger"
+                      class="fa-solid fa-pen-to-square text-success cursor-pointer"
+                    ></i>
+                  </td>
+                  <td>
+                    <i
+                      onClick={() => deleteFood(food._id)}
+                      class="fa-solid fa-trash ms-2 text-danger cursor-pointer"
                     ></i>
                   </td>
                 </tr>
@@ -239,7 +271,7 @@ function ViewFoodItems() {
             name="name"
             placeholder="Food Name"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={ foodData.foodName }
+            value={foodData.foodName}
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, foodName: e.target.value })
@@ -250,7 +282,7 @@ function ViewFoodItems() {
             name="description"
             placeholder="Description"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={ foodData.description}
+            value={foodData.description}
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, description: e.target.value })
@@ -259,7 +291,7 @@ function ViewFoodItems() {
           <select
             name="category"
             className="form-control  rounded-3 border-1 border-secondary fw-bold"
-            value={ foodData.category }
+            value={foodData.category}
             // onChange={handleInputChange}
             onChange={(e) => setFoodData({ ...foodData, type: e.target.value })}
           >
@@ -272,7 +304,7 @@ function ViewFoodItems() {
             name="price"
             placeholder="Price"
             className="form-control rounded-3 border-1 border-secondary fw-bold"
-            value={foodData.price }
+            value={foodData.price}
             // onChange={handleInputChange}
             onChange={(e) =>
               setFoodData({ ...foodData, price: e.target.value })

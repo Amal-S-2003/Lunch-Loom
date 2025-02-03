@@ -23,7 +23,11 @@ function OrderPage() {
   const fetchCartData = async () => {
     try {
       const result = await getUserData({ userId });
-      setCartItems(result.data[0].cart); // Assuming `result.data[0].cart` has the cart data
+      setCartItems(result.data[0].cart);
+      console.log(result.data[0].cart);
+      console.log(cartItems);
+      
+      
       calculateTotalPrice(result.data[0].cart);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -43,21 +47,21 @@ function OrderPage() {
       phone,
       address,
       paymentMethod,
-      cartItems,
+      orderItems:cartItems,
       totalPrice,
     };
     const result = await placeOrder(orderDetails);
     if (result.status == 200) {
       toast.success(result.data);
+      const reqBody = {
+        userId,
+        cartItems:[],
+      };
+      const updatedCart = await updateCart(reqBody);
+      navigate("/");
     } else {
-      toast.warn("Order Not Placed..");
+      toast.warn(result.data);
     }
-    const reqBody = {
-      userId,
-      cartItems:[],
-    };
-    const updatedCart = await updateCart(reqBody);
-    navigate("/");
   };
 
   return (
